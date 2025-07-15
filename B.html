@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Learning Quiz</title>
+  <style>
+  
+    header {
+      background: #003366;
+      color: white;
+      padding: 3rem;
+      text-align: center;
+      font-size: 2.5rem;
+      border-radius: 0.5em;
+      margin-bottom: 4rem;
+      margin-top: 2rem;
+      font-weight: 900 ;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: #f4f4f4;
+      color: #333;
+      line-height: 1.6;
+    }
+    .quiz-container {
+      max-width: 600px;
+      font-family: Times New Roman;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 2em;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    .question {
+      margin-bottom: 15px;
+    }
+    .answer {
+      display: block;
+      padding: 10px;
+      margin: 6px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .answer:hover {
+      background: #f1f1f1;
+    }
+    .next-btn {
+      padding: 10px 20px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    .next-btn:hover {
+      background: #45a049;
+    }
+    .score {
+      font-size: 20px;
+      margin-top: 20px;
+      color: #333;
+    }
+    h4 { 
+      font-size: 10px;
+      text-align: left;
+  </style>
+</head>
+    <header>FOREX TRADING QUIZ</header>
+<body>
+  <div class="quiz-container">
+
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <button class="next-btn" onclick="nextQuestion()">Next</button>
+    <div class="score" id="score"></div>
+  </div>
+
+<script>
+const quizData = [
+  {
+    question: "When is a bullish engulfing pattern most effective?",
+    answers: [
+      "At the end of a downtrend", 
+      "In the middle of a consolidation", 
+      "At the start of an uptrend", 
+      "During sideways movement"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a bearish engulfing pattern?",
+    answers: [
+      "A large bearish candle fully engulfs the prior bullish candle", 
+      "A doji appears after a bullish candle", 
+      "A small bearish candle after a large bullish candle", 
+      "Two small candles with no real body"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the psychological meaning behind the Engulfing pattern?",
+    answers: [
+      "A power shift from one group (buyers or sellers) to the other", 
+      "An increase in volume without price change", 
+      "A retracement phase", 
+      "An overbought RSI signal"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the Morning Star pattern?",
+    answers: [
+      "A three-candle bullish reversal pattern occurring at the bottom of a downtrend", 
+      "A single bullish candlestick with a long lower shadow", 
+      "A bearish continuation pattern", 
+      "A reversal signal seen in RSI"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the Evening Star pattern?",
+    answers: [
+      "A three-candle bearish reversal pattern that appears at the top of an uptrend", 
+      "A single bearish candle with a long wick", 
+      "A continuation pattern in a downtrend", 
+      "A neutral pattern with equal opens and closes"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a Hammer (Pin Bar) pattern?",
+    answers: [
+      "A bullish reversal pattern with a small body and long lower shadow", 
+      "A bearish candle with no shadows", 
+      "A continuation pattern with high volume", 
+      "A bullish engulfing with a gap"
+    ],
+    correct: 0
+  },
+  {
+    question: "What does a Shooting Star indicate?",
+    answers: [
+      "A bearish reversal with a small body and long upper shadow", 
+      "A strong uptrend with high volume", 
+      "A bullish continuation pattern", 
+      "A neutral doji formation"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a Harami pattern?",
+    answers: [
+      "A two-candle pattern where a small candle is contained within a larger one", 
+      "A long wick candle followed by a gap", 
+      "A three-candle bullish pattern", 
+      "Two dojis side-by-side"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the Tweezers Top pattern?",
+    answers: [
+      "A bearish reversal pattern with two candles—first bullish, second bearish—at the top of an uptrend", 
+      "Two bullish candles with no wicks", 
+      "A single long bearish candle", 
+      "A neutral pattern at resistance"
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the significance of candlestick patterns in trading?",
+    answers: [
+      "They reflect market psychology and can predict potential reversals or continuations", 
+      "They confirm moving average crossovers", 
+      "They are only used for scalping", 
+      "They reduce risk to zero"
+    ],
+    correct: 0
+  }
+];
+
+let current = 0;
+let score = 0;
+
+function shuffleAnswers(q) {
+  const correctAnswer = q.answers[q.correct];
+  const shuffled = q.answers.map((ans, idx) => ({ ans, isCorrect: idx === q.correct }));
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
+function showQuestion() {
+  const q = quizData[current];
+  document.getElementById("question").innerText = q.question;
+  const answersEl = document.getElementById("answers");
+  answersEl.innerHTML = "";
+  const shuffled = shuffleAnswers(q);
+  shuffled.forEach((obj, index) => {
+    const btn = document.createElement("button");
+    btn.className = "answer";
+    btn.innerText = obj.ans;
+    btn.onclick = () => selectAnswer(obj.isCorrect);
+    answersEl.appendChild(btn);
+  });
+}
+
+function selectAnswer(isCorrect) {
+  if (isCorrect) score++;
+  document.querySelectorAll('.answer').forEach(btn => btn.disabled = true);
+  showCorrectAnswers();
+}
+
+function showCorrectAnswers() {
+  const q = quizData[current];
+  const correctAnswer = q.answers[q.correct];
+  document.querySelectorAll('.answer').forEach(btn => {
+    if (btn.innerText === correctAnswer) {
+      btn.style.background = "#d4edda";
+    } else {
+      btn.style.background = "#f8d7da";
+    }
+  });
+}
+
+function nextQuestion() {
+  current++;
+  if (current < quizData.length) {
+    showQuestion();
+  } else {
+    document.querySelector(".quiz-container").innerHTML = `
+      <h2>Quiz Completed!</h2>
+      <div class="score">Your Score: ${score}/${quizData.length}</div>
+      <button class="next-btn" onclick="location.reload()">Restart</button>
+    `;
+  }
+}
+
+showQuestion();
+</script>
+  <h4>  <a href="qui$.html">Back To Tutorial</a></h4>
+</body>
+</html>

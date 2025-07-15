@@ -1,0 +1,137 @@
+body {
+  font-family: Times New Roman, Comic Sans MS;
+  margin: 0;
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+header {
+  background-color: #000;
+  color: white;
+  padding: 1em 2em;
+  display: flex;
+  justify-content: space-between;
+  text-align: ;: center;
+}
+h2 {
+  font-family: Georgia;
+  font-weight: bold;
+}
+a {
+  text-decoration: none;
+  color: #222;
+}
+o {
+  color: #fff;
+  font-size: 1em;
+}
+
+nav a {
+  margin: 0 10px;
+  color: white;
+  text-decoration: none;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+.hero {
+  text-align: center;
+  padding: 2em;
+  background: linear-gradient(to right, #333, #111);
+  color: white;
+}
+
+.hero img {
+  width: 80%;
+  max-width: 600px;
+  margin-top: 20px;
+  border-radius: 12px;
+}
+
+.gallery {
+  padding: 2em;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.car-card {
+  background-color: white;
+  margin: 1em;
+  border-radius: 10px;
+  overflow: hidden;
+  width: 300px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.car-card img {
+  width: 100%;
+  height: auto;
+}
+
+.car-card h3 {
+  padding: 0.5em;
+  margin: 0;
+}
+
+.car-card p {
+  padding: 0 0.5em 1em;
+}
+
+.about {
+  padding: 2em;
+}
+
+footer {
+  background-color: #111;
+  color: white;
+  text-align: center;
+  padding: 1em 0;
+}
+.home-btn {
+  position: absolute;        /* keeps it in the corner even if window resizes */
+  top: 20px;
+  left: 20px;
+  padding: 8px 14px;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  text-decoration: none;
+  color: #333;
+  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  transition: background-color 0.25s ease;
+}
+
+.home-btn:hover {
+  background-color: #f2f2f2;
+}
+main {
+  padding: 20px;
+  max-width: 600px;
+  margin: auto;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  margin: 10px 0;
+}
+
+button {
+  background: #003366;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #0055aa;
+}

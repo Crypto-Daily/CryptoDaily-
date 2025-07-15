@@ -1,0 +1,153 @@
+<!-- File: signup.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sign Up</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #eef2f3;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .form-box {
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      width: 300px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    a {
+      text-decoration: none;
+      color: #222;
+    }
+    input[type="submit"] {
+      width: 100%;
+      padding: 12px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    input[type="submit"]:hover {
+      background-color: #45a049;
+    }
+    h2 {
+      font-size: 2em;
+    }
+    a {
+      text-decoration: none;
+      color:grey;
+      font-size: 0.8em;
+    }
+    h3 {
+      font-size:1em;
+      text-align: center;
+    }
+  </style>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+</head>
+<body>
+  <div class="form-box">
+    <h2>Sign Up</h2>
+    <form id="signupForm">
+      <input type="text" id="username" placeholder="Username" required>
+      <input type="text" id="email" placeholder="Email Address" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <input type="submit" value="Sign Up">
+      
+<h3> <a href= "index.html"> ¤HOME </a></h3>
+
+      <h3> Already Have An Account <a href= "Login.html"> Login </a></h3>
+
+    </form>
+  </div>
+
+<script>
+  var firebaseConfig = {
+    apiKey: "AIzaSyBw61nCvernB7TVVbOOWj3ouO5NJlem6Jw",
+    authDomain: "cryptodaily-ab02f.firebaseapp.com",
+    databaseURL: "https://cryptodaily-ab02f-default-rtdb.firebaseio.com",
+    projectId: "cryptodaily-ab02f",
+    storageBucket: "cryptodaily-ab02f.firebasestorage.app",
+    messagingSenderId: "542782327639",
+    appId: "1:542782327639:web:6197ce7f51f9593fb14c12",
+    measurementId: "G-5XJZXMNL14"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+  
+  // ✅ Email validation function
+  function isValidEmail(email) {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  }
+  
+  document.getElementById("signupForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    
+    const username = document.getElementById("username").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    
+    if (!username || !email || !password) {
+      alert("Please fill in all fields.");
+      return;
+    }
+    
+    if (!isValidEmail(email)) {
+      alert("Please enter a valid email address.");
+      return;
+    }
+    
+    // ✅ Check if the email is already used by any user
+    db.ref("users").once("value").then(snapshot => {
+      let emailExists = false;
+      
+      snapshot.forEach(childSnapshot => {
+        const userData = childSnapshot.val();
+        if (userData.email === email) {
+          emailExists = true;
+        }
+      });
+      
+      if (emailExists) {
+        alert("This email is already registered.");
+        return;
+      }
+      
+      // ✅ Save new user
+      db.ref("users/" + username).set({
+        email: email,
+        password: password
+      }).then(() => {
+        alert("✅ Successful !");
+        window.location.href = "ind€x.html";
+      }).catch((error) => {
+        alert("Error: " + error.message);
+      });
+      
+    }).catch(error => {
+      alert("Error checking email: " + error.message);
+    });
+  });
+</script>
+</body>
+</html>

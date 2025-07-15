@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Learning Quiz</title>
+  <style>
+  
+    header {
+      background: #003366;
+      color: white;
+      padding: 3rem;
+      text-align: center;
+      font-size: 2.5rem;
+      border-radius: 0.5em;
+      margin-bottom: 4rem;
+      margin-top: 2rem;
+      font-weight: 900 ;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: #f4f4f4;
+      color: #333;
+      line-height: 1.6;
+    }
+    .quiz-container {
+      max-width: 600px;
+      font-family: Times New Roman;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 2em;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    .question {
+      margin-bottom: 15px;
+    }
+    .answer {
+      display: block;
+      padding: 10px;
+      margin: 6px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .answer:hover {
+      background: #f1f1f1;
+    }
+    .next-btn {
+      padding: 10px 20px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    .next-btn:hover {
+      background: #45a049;
+    }
+    .score {
+      font-size: 20px;
+      margin-top: 20px;
+      color: #333;
+    }
+    h4 { 
+      font-size: 10px;
+      text-align: left;
+  </style>
+</head>
+    <header>FOREX TRADING QUIZ</header>
+<body>
+  <div class="quiz-container">
+
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <button class="next-btn" onclick="nextQuestion()">Next</button>
+    <div class="score" id="score"></div>
+  </div>
+
+<script>
+const quizData = [
+  {
+    question: "What is a supply zone?",
+    answers: [
+      "An area where selling pressure is expected to emerge.",
+      "A technical range where price usually accelerates without warning.",
+      "A level where previous buy orders are likely to get triggered again.",
+      "A signal based on RSI where resistance crosses a high threshold."
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a demand zone?",
+    answers: [
+      "An area where buying pressure is expected to emerge.",
+      "A price region where oversold indicators suggest shorting opportunities.",
+      "A location on the chart where past resistance may form again.",
+      "An overlap of trendlines and Fibonacci that blocks downward movement."
+    ],
+    correct: 0
+  },
+  {
+    question: "Why should you wait for confirmation at support/resistance?",
+    answers: [
+      "To avoid false breakouts.",
+      "To ensure a moving average has realigned with market structure.",
+      "Because it’s the best way to confirm candlestick strength before entry.",
+      "To prevent premature exits caused by short-term volume changes."
+    ],
+    correct: 0
+  },
+  {
+    question: "What is chart pattern context?",
+    answers: [
+      "Understanding where a pattern forms within the market structure.",
+      "Using a pattern in isolation without considering support/resistance.",
+      "The alignment of EMA crossover with recent candle formations.",
+      "Identifying if RSI and MACD agree before reading price zones."
+    ],
+    correct: 0
+  },
+  {
+    question: "What’s the risk of trading in a choppy market?",
+    answers: [
+      "Low probability setups and false signals.",
+      "Reversal patterns failing to confirm on lower timeframes.",
+      "Trend lines getting invalidated due to high market noise.",
+      "Slippage during key levels leading to improper stop placement."
+    ],
+    correct: 0
+  },
+  {
+    question: "Why is patience critical in trading?",
+    answers: [
+      "Waiting for optimal setups increases success rates.",
+      "Quick trades based on indicators are usually more reliable.",
+      "Constant screen watching improves speed and reaction time.",
+      "Avoiding setups leads to fewer learning experiences overall."
+    ],
+    correct: 0
+  },
+  {
+    question: "How many candles make up the Morning Star pattern?",
+    answers: [
+      "Three.",
+      "Two, with one large bullish and one indecisive.",
+      "Four or more depending on the trend reversal depth.",
+      "One long bullish candle followed by consolidation."
+    ],
+    correct: 0
+  },
+  {
+    question: "What type of trend precedes a Shooting Star?",
+    answers: [
+      "An uptrend.",
+      "A ranging market with no clear direction in volume.",
+      "A flat consolidation pattern followed by fake breakouts.",
+      "A long downtrend ending in sudden volume spikes."
+    ],
+    correct: 0
+  },
+  {
+    question: "What makes the Evening Star bearish?",
+    answers: [
+      "The large bearish candle that follows indecision.",
+      "The fact that it forms after a low volume rally attempt.",
+      "It includes a candle pattern that ignores previous highs.",
+      "It only appears when the RSI is below 50 and falling fast."
+    ],
+    correct: 0
+  },
+  {
+    question: "How do you filter candlestick signals?",
+    answers: [
+      "With confluence: trend, level, and time frame analysis.",
+      "By waiting for RSI and MACD to confirm a hidden divergence.",
+      "Through real-time volume spikes following each candlestick.",
+      "Using at least three indicators and a strong resistance zone."
+    ],
+    correct: 0
+  }
+];
+
+let current = 0;
+let score = 0;
+
+function shuffleAnswers(q) {
+  const correctAnswer = q.answers[q.correct];
+  const shuffled = q.answers.map((ans, idx) => ({ ans, isCorrect: idx === q.correct }));
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
+function showQuestion() {
+  const q = quizData[current];
+  document.getElementById("question").innerText = q.question;
+  const answersEl = document.getElementById("answers");
+  answersEl.innerHTML = "";
+  const shuffled = shuffleAnswers(q);
+  shuffled.forEach((obj, index) => {
+    const btn = document.createElement("button");
+    btn.className = "answer";
+    btn.innerText = obj.ans;
+    btn.onclick = () => selectAnswer(obj.isCorrect);
+    answersEl.appendChild(btn);
+  });
+}
+
+function selectAnswer(isCorrect) {
+  if (isCorrect) score++;
+  document.querySelectorAll('.answer').forEach(btn => btn.disabled = true);
+  showCorrectAnswers();
+}
+
+function showCorrectAnswers() {
+  const q = quizData[current];
+  const correctAnswer = q.answers[q.correct];
+  document.querySelectorAll('.answer').forEach(btn => {
+    if (btn.innerText === correctAnswer) {
+      btn.style.background = "#d4edda";
+    } else {
+      btn.style.background = "#f8d7da";
+    }
+  });
+}
+
+function nextQuestion() {
+  current++;
+  if (current < quizData.length) {
+    showQuestion();
+  } else {
+    document.querySelector(".quiz-container").innerHTML = `
+      <h2>Quiz Completed!</h2>
+      <div class="score">Your Score: ${score}/${quizData.length}</div>
+      <button class="next-btn" onclick="location.reload()">Restart</button>
+    `;
+  }
+}
+
+showQuestion();
+</script>
+  <h4>  <a href="qui$.html">Back To Tutorial</a></h4>
+</body>
+</html>

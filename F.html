@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Learning Quiz</title>
+  <style>
+  
+    header {
+      background: #003366;
+      color: white;
+      padding: 3rem;
+      text-align: center;
+      font-size: 2.5rem;
+      border-radius: 0.5em;
+      margin-bottom: 4rem;
+      margin-top: 2rem;
+      font-weight: 900 ;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: #f4f4f4;
+      color: #333;
+      line-height: 1.6;
+    }
+    .quiz-container {
+      max-width: 600px;
+      font-family: Times New Roman;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 2em;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    .question {
+      margin-bottom: 15px;
+    }
+    .answer {
+      display: block;
+      padding: 10px;
+      margin: 6px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .answer:hover {
+      background: #f1f1f1;
+    }
+    .next-btn {
+      padding: 10px 20px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    .next-btn:hover {
+      background: #45a049;
+    }
+    .score {
+      font-size: 20px;
+      margin-top: 20px;
+      color: #333;
+    }
+    h4 { 
+      font-size: 10px;
+      text-align: left;
+  </style>
+</head>
+    <header>FOREX TRADING QUIZ</header>
+<body>
+  <div class="quiz-container">
+
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <button class="next-btn" onclick="nextQuestion()">Next</button>
+    <div class="score" id="score"></div>
+  </div>
+
+<script>
+const quizData = [
+  {
+    question: "What does screen time mean in trading?",
+    answers: [
+      "Time spent watching and analyzing charts to build skill.",
+      "A measurement of how frequently a trader engages with live market data while applying real-time analysis based on indicators and price action.",
+      "An activity where traders monitor various asset classes across multiple timeframes without necessarily taking any positions.",
+      "Studying candlestick patterns regularly."
+    ],
+    correct: 0
+  },
+  {
+    question: "Why is psychology important in trading?",
+    answers: [
+      "Emotions like fear and greed greatly impact decisions.",
+      "Mental discipline helps traders stick to strategies even during volatile market periods, which prevents impulsive errors.",
+      "The psychological state of a trader determines how effectively they can manage losses and maintain consistent execution routines.",
+      "It affects whether you check news often."
+    ],
+    correct: 0
+  },
+  {
+    question: "What is meant by risk per trade?",
+    answers: [
+      "The percentage of your capital you're willing to lose on one trade.",
+      "A calculated portion of your total portfolio size allocated per position to control losses in line with a risk management plan.",
+      "A strategy that helps avoid overexposure by setting trade-specific loss thresholds aligned with broader financial goals.",
+      "How much you place on a trade."
+    ],
+    correct: 0
+  },
+  {
+    question: "Why is overtrading dangerous?",
+    answers: [
+      "It increases transaction costs and emotional fatigue.",
+      "It leads to impulsive decision-making and disrupts strategy-based execution, resulting in poor performance and mental exhaustion.",
+      "Overtrading drains both psychological capital and brokerage accounts through excessive commissions and unfiltered entries.",
+      "It just wastes energy."
+    ],
+    correct: 0
+  },
+  {
+    question: "What is slippage?",
+    answers: [
+      "When a trade is executed at a worse price than expected.",
+      "A common occurrence during high volatility where market orders are filled at less favorable prices due to rapid movement and low liquidity.",
+      "A pricing discrepancy caused by latency between clicking 'buy' or 'sell' and actual execution on the exchange server during fast-moving events.",
+      "A small change in spread."
+    ],
+    correct: 0
+  },
+  {
+    question: "Why use journal entries for trades?",
+    answers: [
+      "To review, learn, and improve future performance.",
+      "Maintaining a trade journal allows for identifying recurring mistakes and refining entry-exit decisions through documented feedback.",
+      "Journaling builds awareness of emotional reactions and sharpens decision-making by logging both strategy and psychological context.",
+      "To remember past trades."
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the most important factor for long-term trading success?",
+    answers: [
+      "Consistency in strategy and risk management.",
+      "Developing a systematic routine that prioritizes disciplined execution and adherence to pre-defined risk parameters over quick profits.",
+      "Regular application of a rules-based method that balances winning and losing trades while protecting capital over time.",
+      "Using good indicators."
+    ],
+    correct: 0
+  },
+  {
+    question: "What is the best mindset for trading?",
+    answers: [
+      "A disciplined, patient, and rule-based approach.",
+      "Staying emotionally neutral under all market conditions while executing strategies based on logic and preparation, not impulse.",
+      "Remaining detached from trade outcomes and following clearly defined setups without chasing moves or reacting emotionally.",
+      "Being calm helps."
+    ],
+    correct: 0
+  },
+  {
+    question: "Why avoid trading during news releases?",
+    answers: [
+      "Increased volatility can lead to erratic price movements.",
+      "Economic announcements often cause unpredictable spikes that can hit stop-losses or lead to slippage despite proper planning.",
+      "High-impact news events introduce irregular behavior in price action, invalidating technical signals and exposing traders to unnecessary risk.",
+      "It’s unpredictable."
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a high-probability trade setup?",
+    answers: [
+      "A setup that aligns trend, level, and candlestick signal.",
+      "One where multiple technical factors agree, such as support zones, trend direction, and confirming candlestick formations.",
+      "A trade idea supported by confluence of technical and price-action signals across at least two timeframes for stronger conviction.",
+      "Looks very strong."
+    ],
+    correct: 0
+  }
+];
+
+let current = 0;
+let score = 0;
+
+function shuffleAnswers(q) {
+  const correctAnswer = q.answers[q.correct];
+  const shuffled = q.answers.map((ans, idx) => ({ ans, isCorrect: idx === q.correct }));
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
+function showQuestion() {
+  const q = quizData[current];
+  document.getElementById("question").innerText = q.question;
+  const answersEl = document.getElementById("answers");
+  answersEl.innerHTML = "";
+  const shuffled = shuffleAnswers(q);
+  shuffled.forEach((obj, index) => {
+    const btn = document.createElement("button");
+    btn.className = "answer";
+    btn.innerText = obj.ans;
+    btn.onclick = () => selectAnswer(obj.isCorrect);
+    answersEl.appendChild(btn);
+  });
+}
+
+function selectAnswer(isCorrect) {
+  if (isCorrect) score++;
+  document.querySelectorAll('.answer').forEach(btn => btn.disabled = true);
+  showCorrectAnswers();
+}
+
+function showCorrectAnswers() {
+  const q = quizData[current];
+  const correctAnswer = q.answers[q.correct];
+  document.querySelectorAll('.answer').forEach(btn => {
+    if (btn.innerText === correctAnswer) {
+      btn.style.background = "#d4edda";
+    } else {
+      btn.style.background = "#f8d7da";
+    }
+  });
+}
+
+function nextQuestion() {
+  current++;
+  if (current < quizData.length) {
+    showQuestion();
+  } else {
+    document.querySelector(".quiz-container").innerHTML = `
+      <h2>Quiz Completed!</h2>
+      <div class="score">Your Score: ${score}/${quizData.length}</div>
+      <button class="next-btn" onclick="location.reload()">Restart</button>
+    `;
+  }
+}
+
+showQuestion();
+</script>
+  <h4>  <a href="qui$.html">Back To Tutorial</a></h4>
+</body>
+</html>

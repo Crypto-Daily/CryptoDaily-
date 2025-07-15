@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Learning Quiz</title>
+  <style>
+  
+    header {
+      background: #003366;
+      color: white;
+      padding: 3rem;
+      text-align: center;
+      font-size: 2.5rem;
+      border-radius: 0.5em;
+      margin-bottom: 4rem;
+      margin-top: 2rem;
+      font-weight: 900 ;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: #f4f4f4;
+      color: #333;
+      line-height: 1.6;
+    }
+    .quiz-container {
+      max-width: 600px;
+      font-family: Times New Roman;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 2em;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    .question {
+      margin-bottom: 15px;
+    }
+    .answer {
+      display: block;
+      padding: 10px;
+      margin: 6px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .answer:hover {
+      background: #f1f1f1;
+    }
+    .next-btn {
+      padding: 10px 20px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    .next-btn:hover {
+      background: #45a049;
+    }
+    .score {
+      font-size: 20px;
+      margin-top: 20px;
+      color: #333;
+    }
+    h4 { 
+      font-size: 10px;
+      text-align: left;
+  </style>
+</head>
+    <header>FOREX TRADING QUIZ</header>
+<body>
+  <div class="quiz-container">
+
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <button class="next-btn" onclick="nextQuestion()">Next</button>
+    <div class="score" id="score"></div>
+  </div>
+
+<script>
+const quizData = [
+  {
+    question: "What is the significance of long shadows in candlesticks?",
+    answers: [
+      "They show price rejection and potential reversals.",
+      "They indicate an extended period of high trading volume but no clear direction, confusing traders.",
+      "They represent balanced pressure from buyers and sellers throughout multiple timeframes.",
+      "They are signs of market noise and usually precede news-driven breakouts."
+    ],
+    correct: 0
+  },
+  {
+    question: "What is market structure in trading?",
+    answers: [
+      "The organization of price movement into trends, ranges, or choppy behavior.",
+      "The underlying mechanics of order book dynamics that govern how trades are executed.",
+      "A framework traders use to measure volatility and volume over historical averages.",
+      "An indicator-based system that predicts momentum based on candle volume and spread."
+    ],
+    correct: 0
+  },
+  {
+    question: "What characterizes an uptrend?",
+    answers: [
+      "A series of higher highs and higher lows.",
+      "Continued price action near moving average convergence lines.",
+      "Consistent RSI values above 70 for multiple candles.",
+      "Spikes in volume that push the market temporarily upwards before consolidation."
+    ],
+    correct: 0
+  },
+  {
+    question: "What characterizes a downtrend?",
+    answers: [
+      "A series of lower highs and lower lows.",
+      "Momentum indicators consistently falling below key Fibonacci retracement levels.",
+      "Sustained bearish divergence across multiple oscillators like MACD and RSI.",
+      "Sharp candlestick reversals that occur without fundamental confirmations."
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a ranging market?",
+    answers: [
+      "A market moving sideways between horizontal support and resistance.",
+      "A period when the market is heavily influenced by external news but lacks momentum.",
+      "A scenario where indicators contradict each other causing indecision among traders.",
+      "A sequence of candles with similar highs and lows driven by institutional orders."
+    ],
+    correct: 0
+  },
+  {
+    question: "What is an impulsive move in a trend?",
+    answers: [
+      "A strong price movement in the direction of the trend.",
+      "A breakout that happens due to unusual volume spikes across correlated assets.",
+      "A divergence between price action and momentum that leads to sudden reversals.",
+      "A phase of emotional trading activity driven by news and volatility indexes."
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a retracement or corrective move?",
+    answers: [
+      "A temporary move against the trend before continuation.",
+      "A sharp decline in price due to exhaustion of institutional orders.",
+      "A change in volume structure followed by a divergence in leading indicators.",
+      "A sudden shift caused by overlapping support and resistance zones failing."
+    ],
+    correct: 0
+  },
+  {
+    question: "Why is support important in technical analysis?",
+    answers: [
+      "It’s a level where buying interest prevents price from falling further.",
+      "It marks the area where Fibonacci and EMA levels align perfectly to confirm reversals.",
+      "It acts as a psychological price zone where news sentiment turns neutral.",
+      "It is used to calculate mean reversion based on historical Bollinger Band data."
+    ],
+    correct: 0
+  },
+  {
+    question: "Why is resistance important in technical analysis?",
+    answers: [
+      "It’s a level where selling interest prevents price from rising.",
+      "It identifies trend exhaustion points using confluence from volume and indicators.",
+      "It provides the upper limit for volatility-based strategies using ATR and bands.",
+      "It helps recognize momentum shifts confirmed by stochastic crossover failures."
+    ],
+    correct: 0
+  },
+  {
+    question: "What is a trendline?",
+    answers: [
+      "A diagonal line that connects swing highs or lows to identify the trend.",
+      "A calculated average of highs and lows used to project future movement ranges.",
+      "A static reference line used only in ranging markets to detect breakouts.",
+      "A price-based channel used to assess divergence between fundamental value and market price."
+    ],
+    correct: 0
+  }
+];
+
+let current = 0;
+let score = 0;
+
+function shuffleAnswers(q) {
+  const correctAnswer = q.answers[q.correct];
+  const shuffled = q.answers.map((ans, idx) => ({ ans, isCorrect: idx === q.correct }));
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
+function showQuestion() {
+  const q = quizData[current];
+  document.getElementById("question").innerText = q.question;
+  const answersEl = document.getElementById("answers");
+  answersEl.innerHTML = "";
+  const shuffled = shuffleAnswers(q);
+  shuffled.forEach((obj, index) => {
+    const btn = document.createElement("button");
+    btn.className = "answer";
+    btn.innerText = obj.ans;
+    btn.onclick = () => selectAnswer(obj.isCorrect);
+    answersEl.appendChild(btn);
+  });
+}
+
+function selectAnswer(isCorrect) {
+  if (isCorrect) score++;
+  document.querySelectorAll('.answer').forEach(btn => btn.disabled = true);
+  showCorrectAnswers();
+}
+
+function showCorrectAnswers() {
+  const q = quizData[current];
+  const correctAnswer = q.answers[q.correct];
+  document.querySelectorAll('.answer').forEach(btn => {
+    if (btn.innerText === correctAnswer) {
+      btn.style.background = "#d4edda";
+    } else {
+      btn.style.background = "#f8d7da";
+    }
+  });
+}
+
+function nextQuestion() {
+  current++;
+  if (current < quizData.length) {
+    showQuestion();
+  } else {
+    document.querySelector(".quiz-container").innerHTML = `
+      <h2>Quiz Completed!</h2>
+      <div class="score">Your Score: ${score}/${quizData.length}</div>
+      <button class="next-btn" onclick="location.reload()">Restart</button>
+    `;
+  }
+}
+
+showQuestion();
+</script>
+  <h4>  <a href="qui$.html">Back To Tutorial</a></h4>
+</body>
+</html>
